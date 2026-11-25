@@ -29,11 +29,16 @@ if not defined PY (
   pause
   exit /b 1
 )
+echo Using Python: %PY%
+echo.
 %PY% -I "%~dp0make_game.py" %*
 set "RC=%ERRORLEVEL%"
 echo.
-if "%RC%"=="0" (echo Done.) else (echo The build stopped. Read the message above.)
-pause
+if "%RC%"=="0" (echo Done.) else (echo The build stopped with error code %RC%. Read the message above.)
+rem Only wait for a key when the window was opened by double-click; from an open terminal just return.
+set "DBLCLICK="
+echo %cmdcmdline% | find /i "%~nx0" >nul 2>nul && set "DBLCLICK=1"
+if defined DBLCLICK pause
 exit /b %RC%
 
 rem ---- Helpers (only reached by "call"; the script exits above) ----
